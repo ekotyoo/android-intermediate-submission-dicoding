@@ -49,6 +49,7 @@ class StoryRemoteMediator(
                     nextKey
                 }
             }
+
             val stories = mutableListOf<StoryModel>()
             try {
                 val responses = storyRemoteDataSource.getStories(

@@ -7,6 +7,7 @@ import com.ekotyoo.storyapp.data.repositories.StoryRepository
 import com.ekotyoo.storyapp.data.repositories.UserRepository
 import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.utils.AuthError
+import com.ekotyoo.storyapp.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.launch
 
 class HomeViewModel(

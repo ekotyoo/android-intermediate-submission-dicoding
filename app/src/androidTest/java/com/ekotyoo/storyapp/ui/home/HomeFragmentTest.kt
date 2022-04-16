@@ -53,6 +53,7 @@ class HomeFragmentTest {
         onView(withId(R.id.rv_story)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_story)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
         onView(withText("zaki")).check(matches(isDisplayed()))
+
     }
 
     @Test
