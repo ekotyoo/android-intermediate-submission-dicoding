@@ -65,7 +65,13 @@ class StoryRepository(
         withContext(Dispatchers.IO) {
             try {
                 val response = if (latLng != null) {
-                    storyRemoteDataSource.postStories(token, file, description, latLng.latitude, latLng.longitude)
+                    storyRemoteDataSource.postStories(
+                        token,
+                        file,
+                        description,
+                        latLng.latitude,
+                        latLng.longitude
+                    )
                 } else {
                     storyRemoteDataSource.postStories(token, file, description)
                 }

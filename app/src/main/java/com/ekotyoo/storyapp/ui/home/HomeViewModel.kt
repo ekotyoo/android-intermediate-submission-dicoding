@@ -7,6 +7,7 @@ import com.ekotyoo.storyapp.data.repositories.StoryRepository
 import com.ekotyoo.storyapp.data.repositories.UserRepository
 import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.utils.AuthError
+import com.ekotyoo.storyapp.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -17,7 +18,13 @@ class HomeViewModel(
     val userModel = userRepository.userModel.asLiveData()
 
     val stories: LiveData<PagingData<StoryModel>> =
-        userModel.switchMap { storyRepository.getStories(it.token ?: "").cachedIn(viewModelScope) }
+        userModel.switchMap {
+            wrapEspressoIdlingResource {
+                storyRepository.getStories(
+                    it.token ?: ""
+                ).cachedIn(viewModelScope)
+            }
+        }
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

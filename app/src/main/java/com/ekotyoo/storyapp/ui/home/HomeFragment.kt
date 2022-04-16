@@ -104,7 +104,11 @@ class HomeFragment : Fragment() {
         }
 
         binding.btnMap.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToMapsFragment(action = MapsFragment.ACTION_STORIES))
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToMapsFragment(
+                    action = MapsFragment.ACTION_STORIES
+                )
+            )
         }
     }
 
