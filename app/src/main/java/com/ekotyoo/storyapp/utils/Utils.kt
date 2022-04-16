@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
+import android.util.Patterns
 import android.widget.Toast
 import com.ekotyoo.storyapp.R
 import java.io.ByteArrayOutputStream
@@ -22,6 +23,9 @@ import java.util.*
 private const val FILENAME_FORMAT = "dd-MMM-yyyy"
 
 object Utils {
+
+    private const val MINIMUM_PASSWORD_LENGTH = 6
+
     fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
@@ -107,6 +111,14 @@ object Utils {
         bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
         return file
     }
+
+    fun validateEmail(email: String): Boolean =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+    fun validatePassword(password: String): Boolean =
+        password.length >= MINIMUM_PASSWORD_LENGTH
+
+    fun validateName(name: String): Boolean = name.isNotEmpty()
 }
 
 fun String.withDateFormat(): String {

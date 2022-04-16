@@ -3,18 +3,23 @@ package com.ekotyoo.storyapp.ui.login
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.ekotyoo.storyapp.R
 import com.ekotyoo.storyapp.databinding.FragmentLoginBinding
-import com.ekotyoo.storyapp.ui.EmailEditText
 import com.ekotyoo.storyapp.utils.Utils
 import com.ekotyoo.storyapp.utils.ViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
@@ -46,40 +51,53 @@ class LoginFragment : Fragment() {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
 
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.etEmail.error = getString(R.string.email_not_valid)
-                return@setOnClickListener
-            }
-
-            if (password.length < 6) {
-                Utils.showToast(requireContext(), getString(R.string.password_is_empty))
-                return@setOnClickListener
-            }
-
             viewModel.login(email, password)
         }
 
         binding.tvOrSignup.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
         }
+
+        validateForm()
     }
 
-    override fun onPause() {
-        super.onPause()
-        binding.etEmail.text?.clear()
+    private fun validateForm() {
+        val email = MutableStateFlow("")
+        val password = MutableStateFlow("")
+
+        with(binding) {
+            etEmail.doAfterTextChanged { text -> email.value = text.toString().trim() }
+            etPassword.doAfterTextChanged { text -> password.value = text.toString().trim() }
+        }
+
+        lifecycleScope.launch {
+            combine(email, password) { e, p ->
+                Utils.validateEmail(e) && Utils.validatePassword(p)
+            }.collect { isValid ->
+                binding.btnLogin.isEnabled = isValid
+            }
+        }
     }
 
     private fun playAnimation() {
         val greeting = ObjectAnimator.ofFloat(binding.tvGreeting, View.ALPHA, 1F).setDuration(500L)
         val lottie = ObjectAnimator.ofFloat(binding.lottieAuth, View.ALPHA, 1f).setDuration(500L)
         val loginAlpha = ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1F).setDuration(500L)
-        val loginTranslateX = ObjectAnimator.ofFloat(binding.tvLogin, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
+        val loginTranslateX =
+            ObjectAnimator.ofFloat(binding.tvLogin, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
         val etEmailAlpha = ObjectAnimator.ofFloat(binding.etEmail, View.ALPHA, 1F).setDuration(500L)
-        val etEmailTranslateX = ObjectAnimator.ofFloat(binding.etEmail, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
-        val etPassAlpha = ObjectAnimator.ofFloat(binding.etPassword, View.ALPHA, 1F).setDuration(500L)
-        val etPassTranslateX = ObjectAnimator.ofFloat(binding.etPassword, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
-        val btnLoginAlpha = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1F).setDuration(500L)
-        val btnLoginTranslateX = ObjectAnimator.ofFloat(binding.btnLogin, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
+        val etEmailTranslateX =
+            ObjectAnimator.ofFloat(binding.etEmail, View.TRANSLATION_X, -100F, 0F).setDuration(500L)
+        val etPassAlpha =
+            ObjectAnimator.ofFloat(binding.etPassword, View.ALPHA, 1F).setDuration(500L)
+        val etPassTranslateX =
+            ObjectAnimator.ofFloat(binding.etPassword, View.TRANSLATION_X, -100F, 0F)
+                .setDuration(500L)
+        val btnLoginAlpha =
+            ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1F).setDuration(500L)
+        val btnLoginTranslateX =
+            ObjectAnimator.ofFloat(binding.btnLogin, View.TRANSLATION_X, -100F, 0F)
+                .setDuration(500L)
         val orSignup = ObjectAnimator.ofFloat(binding.tvOrSignup, View.ALPHA, 1F).setDuration(500L)
 
         val login = AnimatorSet().apply { playTogether(loginAlpha, loginTranslateX) }

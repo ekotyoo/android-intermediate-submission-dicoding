@@ -34,4 +34,12 @@
     <string name="change_language" tools:keep="@string/change_language">Ubah Bahasa</string>
     <string name="failed_launch_camera">Gagal menjalankan kamera!</string>
     <string name="failed_take_picture">Gagal mengambil gambar!</string>
+    <string name="password_is_empty">Masukkan password terlebih dahulu!</string>
+    <string name="cdesc_map_button">Tombol Peta</string>
+    <string name="save">Simpan</string>
+    <string name="no_location_selected">Tidak ada lokasi terpilih</string>
+    <string name="location">Lokasi</string>
+    <string name="change">Ubah</string>
+    <string name="delete">Hapus</string>
+    <string name="delete_location">Hapus lokasi</string>
 </resources>

@@ -7,13 +7,21 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.util.Util
 import com.ekotyoo.storyapp.R
 import com.ekotyoo.storyapp.databinding.FragmentSignupBinding
 import com.ekotyoo.storyapp.utils.Utils
 import com.ekotyoo.storyapp.utils.ViewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 class SignupFragment : Fragment() {
 
@@ -50,22 +58,32 @@ class SignupFragment : Fragment() {
             val email = binding.etEmailSignup.text.toString().trim()
             val password = binding.etPasswordSignup.text.toString().trim()
 
-            if (name.isEmpty()) {
-                binding.etNameSignup.error = getString(R.string.must_not_be_empty)
-                return@setOnClickListener
-            }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.etEmailSignup.error = getString(R.string.email_not_valid)
-                return@setOnClickListener
-            }
-
-            if (password.length < 6) {
-                Utils.showToast(requireContext(), getString(R.string.password_is_empty))
-                return@setOnClickListener
-            }
-
             viewModel.signup(name, email, password)
+        }
+
+        validateForm()
+    }
+
+    private fun validateForm() {
+        val name = MutableStateFlow("")
+        val email = MutableStateFlow("")
+        val password = MutableStateFlow("")
+
+        with(binding) {
+            etNameSignup.doAfterTextChanged { text ->
+                name.value = text.toString().trim()
+                if (!Utils.validateName(name.value)) etNameSignup.error = getString(R.string.must_not_be_empty)
+            }
+            etEmailSignup.doAfterTextChanged { text ->  email.value = text.toString().trim()}
+            etPasswordSignup.doAfterTextChanged { text ->  password.value = text.toString().trim()}
+        }
+
+        lifecycleScope.launch {
+            combine(name, email, password) { n, e, p ->
+                Utils.validateName(n) && Utils.validateEmail(e) && Utils.validatePassword(p)
+            }.collect { isValid ->
+                binding.btnSignup.isEnabled = isValid
+            }
         }
     }
 

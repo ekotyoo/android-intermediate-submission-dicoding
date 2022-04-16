@@ -37,10 +37,10 @@
     <string name="failed_take_picture">Failed to take picture!</string>
     <string name="cdesc_map_button">Map Button</string>
     <string name="save">Save</string>
-    <string name="no_location_selected">No location selected.</string>
+    <string name="no_location_selected">No location selected</string>
     <string name="location">Location</string>
     <string name="change">Change</string>
     <string name="delete">Delete</string>
-    <string name="latlon_format">Lat: %1$.2f Lon: %2$.2f</string>
+    <string name="latlon_format" translatable="false">Lat: %1$.2f Lon: %2$.2f</string>
     <string name="delete_location">Delete location</string>
 </resources>

@@ -78,12 +78,12 @@ class HomeFragment : Fragment() {
             binding.swipeLayout.isRefreshing = false
         }
 
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenCreated {
             adapter.loadStateFlow.distinctUntilChanged { old, new ->
                 (old.mediator?.prepend?.endOfPaginationReached == true) ==
                         (new.mediator?.prepend?.endOfPaginationReached == true)
             }
-                .filter { it.refresh is LoadState.NotLoading && it.prepend.endOfPaginationReached && !it.append.endOfPaginationReached }
+                .filter { it.refresh is LoadState.NotLoading }
                 .collect {
                     binding.rvStory.smoothScrollToPosition(0)
                 }
