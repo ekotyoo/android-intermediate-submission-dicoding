@@ -1,0 +1,38 @@
+package com.ekotyoo.storyapp.ui.poststory
+
+import androidx.lifecycle.*
+import com.ekotyoo.storyapp.data.repositories.StoryRepository
+import com.ekotyoo.storyapp.data.repositories.UserRepository
+import com.ekotyoo.storyapp.utils.StoryError
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+
+class PostStoryViewModel(private val userRepository: UserRepository, private val storyRepository: StoryRepository) : ViewModel() {
+
+    val userModel = userRepository.userModel.asLiveData()
+
+    private val _isSuccess = MutableLiveData<Boolean>()
+    val isSuccess: LiveData<Boolean> = _isSuccess
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
+
+    fun uploadImage(token: String, file: MultipartBody.Part, description: RequestBody) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                storyRepository.postStory(token, file, description)
+                _isSuccess.value = true
+            } catch (e: StoryError) {
+                _errorMessage.value = e.message
+                _isSuccess.value = false
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+}
