@@ -19,11 +19,9 @@ class HomeViewModel(
 
     val stories: LiveData<PagingData<StoryModel>> =
         userModel.switchMap {
-            wrapEspressoIdlingResource {
-                storyRepository.getStories(
-                    it.token ?: ""
-                ).cachedIn(viewModelScope)
-            }
+            storyRepository.getStories(
+                it.token ?: ""
+            ).cachedIn(viewModelScope)
         }
 
     private val _isLoading = MutableLiveData<Boolean>()
