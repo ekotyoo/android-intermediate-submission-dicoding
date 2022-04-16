@@ -9,7 +9,6 @@ import com.ekotyoo.storyapp.data.datasource.local.RemoteKeys
 import com.ekotyoo.storyapp.data.datasource.local.StoryDatabase
 import com.ekotyoo.storyapp.data.datasource.remote.StoryRemoteDataSource
 import com.ekotyoo.storyapp.model.StoryModel
-import com.ekotyoo.storyapp.utils.StoryError
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -50,7 +49,12 @@ class StoryRemoteMediator(
         }
         val stories = mutableListOf<StoryModel>()
         try {
-            val responses = storyRemoteDataSource.getStories(token, page, state.config.pageSize)
+            val responses = storyRemoteDataSource.getStories(
+                    token,
+                    page,
+                    state.config.pageSize
+                )
+
             val endOfPaginationReached = responses.body()?.listStory.isNullOrEmpty()
             responses.body()?.listStory?.forEach {
                 stories.add(
@@ -74,8 +78,10 @@ class StoryRemoteMediator(
                 val keys = stories.map {
                     RemoteKeys(id = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
+
                 storyDatabase.remoteKeysDao().insertAll(keys)
                 storyDatabase.storyDao().insertStory(stories)
+
             }
 
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -91,11 +97,13 @@ class StoryRemoteMediator(
             storyDatabase.remoteKeysDao().getRemoteKeysById(data.id)
         }
     }
+
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, StoryModel>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { data ->
             storyDatabase.remoteKeysDao().getRemoteKeysById(data.id)
         }
     }
+
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, StoryModel>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->

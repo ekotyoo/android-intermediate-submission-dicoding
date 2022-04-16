@@ -20,12 +20,13 @@ object ApiConfig {
         .addInterceptor(loggingInterceptor)
         .build()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://story-api.dicoding.dev/v1/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(client)
-        .build()
-
+    private val retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
 
     fun getUserApi(): UserApi {
         return retrofit.create(UserApi::class.java)
