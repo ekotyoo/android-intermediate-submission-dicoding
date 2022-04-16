@@ -24,6 +24,7 @@ import com.ekotyoo.storyapp.ui.adapters.StoryAdapter
 import com.ekotyoo.storyapp.ui.maps.MapsFragment
 import com.ekotyoo.storyapp.utils.Utils
 import com.ekotyoo.storyapp.utils.ViewModelFactory
+import com.ekotyoo.storyapp.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -63,6 +64,8 @@ class HomeFragment : Fragment() {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
 
+        adapter.refresh()
+
         val adapterWithLoading =
             adapter.withLoadStateFooter(footer = LoadingStateAdapter { adapter.retry() })
         layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -72,29 +75,32 @@ class HomeFragment : Fragment() {
 
         binding.swipeLayout.setOnRefreshListener {
             adapter.refresh()
-            lifecycleScope.launch {
-                adapter.loadStateFlow.distinctUntilChanged { old, new ->
-                    (old.mediator?.prepend?.endOfPaginationReached == true) ==
-                            (new.mediator?.prepend?.endOfPaginationReached == true)
-                }
-                    .filter { it.refresh is LoadState.NotLoading && it.prepend.endOfPaginationReached && !it.append.endOfPaginationReached }
-                    .collect {
-                        binding.rvStory.smoothScrollToPosition(0)
-                    }
-            }
             binding.swipeLayout.isRefreshing = false
         }
 
         lifecycleScope.launch {
-            adapter.loadStateFlow.collect {
-                binding.loadingProgressBar.isVisible = (it.refresh is LoadState.Loading)
-                binding.tvEmpty.isVisible = adapter.itemCount == 0
-                if (it.refresh is LoadState.Error) {
-                    Utils.showToast(
-                        requireContext(),
-                        (it.refresh as LoadState.Error).error.localizedMessage?.toString()
-                            ?: getString(R.string.load_stories_failed)
-                    )
+            adapter.loadStateFlow.distinctUntilChanged { old, new ->
+                (old.mediator?.prepend?.endOfPaginationReached == true) ==
+                        (new.mediator?.prepend?.endOfPaginationReached == true)
+            }
+                .filter { it.refresh is LoadState.NotLoading && it.prepend.endOfPaginationReached && !it.append.endOfPaginationReached }
+                .collect {
+                    binding.rvStory.smoothScrollToPosition(0)
+                }
+        }
+
+        wrapEspressoIdlingResource {
+            lifecycleScope.launch {
+                adapter.loadStateFlow.collect {
+                    binding.loadingProgressBar.isVisible = (it.refresh is LoadState.Loading)
+                    binding.tvEmpty.isVisible = adapter.itemCount == 0
+                    if (it.refresh is LoadState.Error) {
+                        Utils.showToast(
+                            requireContext(),
+                            (it.refresh as LoadState.Error).error.localizedMessage?.toString()
+                                ?: getString(R.string.load_stories_failed)
+                        )
+                    }
                 }
             }
         }
