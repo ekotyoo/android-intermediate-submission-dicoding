@@ -128,7 +128,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.INVISIBLE
+        binding.loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {
