@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import com.bumptech.glide.signature.ObjectKey
 import com.ekotyoo.storyapp.databinding.StoryListItemBinding
 import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.ui.home.HomeFragmentDirections
@@ -36,12 +37,12 @@ class StoryAdapter : PagingDataAdapter<StoryModel, StoryAdapter.ListViewHolder>(
         fun bind(story: StoryModel) {
             Glide.with(binding.root)
                 .load(story.imageUrl)
+                .signature(ObjectKey(story.imageUrl ?: story.id))
                 .transition(
                     withCrossFade(
                         DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
                     )
                 )
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.ivImage)
             binding.apply {
                 tvName.text = story.name
