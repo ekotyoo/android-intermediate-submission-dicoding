@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.PopupWindow
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -25,9 +26,8 @@ import com.ekotyoo.storyapp.ui.maps.MapsFragment
 import com.ekotyoo.storyapp.utils.Utils
 import com.ekotyoo.storyapp.utils.ViewModelFactory
 import com.ekotyoo.storyapp.utils.wrapEspressoIdlingResource
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -38,6 +38,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var adapter: StoryAdapter
     private lateinit var layoutManager: LinearLayoutManager
+
+    private var isFromOtherScreen = false
 
     private val viewModel: HomeViewModel by viewModels {
         ViewModelFactory.getInstance(requireContext())
@@ -62,9 +64,14 @@ class HomeFragment : Fragment() {
         setupPopupMenu()
         adapter = StoryAdapter().apply {
             stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    if (positionStart == 0 && isFromOtherScreen.not()) {
+                        binding.rvStory.smoothScrollToPosition(0)
+                    }
+                }
+            })
         }
-
-        adapter.refresh()
 
         val adapterWithLoading =
             adapter.withLoadStateFooter(footer = LoadingStateAdapter { adapter.retry() })
@@ -76,19 +83,6 @@ class HomeFragment : Fragment() {
         binding.swipeLayout.setOnRefreshListener {
             adapter.refresh()
             binding.swipeLayout.isRefreshing = false
-        }
-
-
-        lifecycleScope.launch {
-            adapter.loadStateFlow.distinctUntilChanged { old, new ->
-                (old.mediator?.prepend?.endOfPaginationReached == true) ==
-                        (new.mediator?.prepend?.endOfPaginationReached == true)
-            }
-                .filter { it.refresh is LoadState.NotLoading }
-
-                .collect {
-                    binding.rvStory.smoothScrollToPosition(0)
-                }
         }
 
         wrapEspressoIdlingResource {
@@ -117,6 +111,10 @@ class HomeFragment : Fragment() {
                     action = MapsFragment.ACTION_STORIES
                 )
             )
+        }
+
+        setFragmentResultListener(MapsFragment.KEY_RESULT) { _, bundle ->
+            isFromOtherScreen = bundle.getBoolean(KEY_FROM_OTHER_SCREEN, false)
         }
     }
 
@@ -175,5 +173,9 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val KEY_FROM_OTHER_SCREEN = "other_screen"
     }
 }

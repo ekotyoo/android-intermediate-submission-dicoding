@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.ekotyoo.storyapp.databinding.FragmentStoryDetailBinding
+import com.ekotyoo.storyapp.ui.home.HomeFragment
+import com.ekotyoo.storyapp.ui.maps.MapsFragment
 import com.ekotyoo.storyapp.utils.withDateFormat
 
 class StoryDetailFragment: Fragment() {
@@ -47,5 +50,12 @@ class StoryDetailFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        setFragmentResult(
+            MapsFragment.KEY_RESULT,
+            Bundle().apply { putBoolean(HomeFragment.KEY_FROM_OTHER_SCREEN, true) })
     }
 }
