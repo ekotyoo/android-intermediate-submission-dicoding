@@ -7,10 +7,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.bumptech.glide.signature.ObjectKey
+import com.ekotyoo.storyapp.R
 import com.ekotyoo.storyapp.databinding.StoryListItemBinding
 import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.ui.home.HomeFragmentDirections
@@ -32,18 +30,15 @@ class StoryAdapter : PagingDataAdapter<StoryModel, StoryAdapter.ListViewHolder>(
         story?.let { holder.bind(it) }
     }
 
-    inner class ListViewHolder(var binding: StoryListItemBinding) :
+    inner class ListViewHolder(private var binding: StoryListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(story: StoryModel) {
             Glide.with(binding.root)
                 .load(story.imageUrl)
+                .placeholder(R.drawable.image_placeholder)
                 .signature(ObjectKey(story.imageUrl ?: story.id))
-                .transition(
-                    withCrossFade(
-                        DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
-                    )
-                )
                 .into(binding.ivImage)
+
             binding.apply {
                 tvName.text = story.name
                 tvDate.text = story.createdAt?.withDateFormat()
