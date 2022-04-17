@@ -19,7 +19,7 @@ class StoryDetailFragment: Fragment() {
     private var _binding: FragmentStoryDetailBinding? = null
     private val binding get() = _binding!!
 
-    val args: StoryDetailFragmentArgs by navArgs()
+    private val args: StoryDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,

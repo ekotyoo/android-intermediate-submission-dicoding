@@ -10,13 +10,12 @@ import androidx.paging.PagingState
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.ui.DummyData
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
+import com.ekotyoo.storyapp.TestCoroutineRule
 import com.ekotyoo.storyapp.ui.adapters.StoryAdapter
-import com.ekotyoo.storyapp.ui.login.getOrAwaitValue
+import com.ekotyoo.storyapp.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,7 +63,7 @@ class HomeViewModelTest {
 
 }
 
-class PagedTestDataSources private constructor(private val items: List<StoryModel>) :
+class PagedTestDataSources private constructor() :
     PagingSource<Int, LiveData<List<StoryModel>>>() {
     companion object {
         fun snapshot(items: List<StoryModel>): PagingData<StoryModel> {

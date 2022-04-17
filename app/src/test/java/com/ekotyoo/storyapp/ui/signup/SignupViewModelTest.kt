@@ -2,8 +2,8 @@ package com.ekotyoo.storyapp.ui.signup
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ekotyoo.storyapp.data.repositories.UserRepository
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
-import com.ekotyoo.storyapp.ui.login.getOrAwaitValue
+import com.ekotyoo.storyapp.TestCoroutineRule
+import com.ekotyoo.storyapp.getOrAwaitValue
 import com.ekotyoo.storyapp.utils.AuthError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

@@ -1,4 +1,4 @@
-package com.ekotyoo.storyapp.ui.login
+package com.ekotyoo.storyapp
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

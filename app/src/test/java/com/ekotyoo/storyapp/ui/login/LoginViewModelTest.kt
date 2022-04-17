@@ -3,7 +3,8 @@ package com.ekotyoo.storyapp.ui.login
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ekotyoo.storyapp.data.repositories.UserRepository
 import com.ekotyoo.storyapp.model.UserModel
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
+import com.ekotyoo.storyapp.TestCoroutineRule
+import com.ekotyoo.storyapp.getOrAwaitValue
 import com.ekotyoo.storyapp.utils.AuthError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow

@@ -5,8 +5,8 @@ import com.ekotyoo.storyapp.data.repositories.StoryRepository
 import com.ekotyoo.storyapp.data.repositories.UserRepository
 import com.ekotyoo.storyapp.model.UserModel
 import com.ekotyoo.storyapp.ui.DummyData
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
-import com.ekotyoo.storyapp.ui.login.getOrAwaitValue
+import com.ekotyoo.storyapp.TestCoroutineRule
+import com.ekotyoo.storyapp.getOrAwaitValue
 import com.ekotyoo.storyapp.utils.StoryError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow

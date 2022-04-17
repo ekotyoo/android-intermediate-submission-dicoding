@@ -28,7 +28,8 @@ import com.ekotyoo.storyapp.model.UserModel
 import com.ekotyoo.storyapp.ui.CameraActivity
 import com.ekotyoo.storyapp.ui.MainActivity
 import com.ekotyoo.storyapp.ui.maps.MapsFragment
-import com.ekotyoo.storyapp.utils.*
+import com.ekotyoo.storyapp.utils.Utils
+import com.ekotyoo.storyapp.utils.ViewModelFactory
 import com.google.android.gms.maps.model.LatLng
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -77,7 +78,8 @@ class PostStoryFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (currentFile != null) binding.ivPreview.setImageURI(Uri.fromFile(currentFile))
-        if (latLng != null) binding.tvLocation.text = getString(R.string.latlon_format, latLng!!.latitude, latLng!!.longitude)
+        if (latLng != null) binding.tvLocation.text =
+            getString(R.string.latlon_format, latLng!!.latitude, latLng!!.longitude)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -113,7 +115,8 @@ class PostStoryFragment : Fragment() {
         setFragmentResultListener(MapsFragment.KEY_RESULT) { _, bundle ->
             val location = bundle.getParcelable(MapsFragment.KEY_LATLONG) as LatLng?
             if (location != null) {
-                binding.tvLocation.text = getString(R.string.latlon_format, location.latitude, location.longitude)
+                binding.tvLocation.text =
+                    getString(R.string.latlon_format, location.latitude, location.longitude)
                 latLng = location
             }
         }

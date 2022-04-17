@@ -2,7 +2,6 @@ package com.ekotyoo.storyapp.ui.login
 
 import androidx.lifecycle.*
 import com.ekotyoo.storyapp.data.repositories.UserRepository
-import com.ekotyoo.storyapp.model.UserModel
 import com.ekotyoo.storyapp.utils.AuthError
 import kotlinx.coroutines.launch
 

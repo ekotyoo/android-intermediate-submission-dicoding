@@ -62,6 +62,7 @@ class MainActivityTest {
     @Test
     fun go_to_map_story() {
         onView(withId(R.id.btn_map)).perform(click())
+        onView(withId(R.id.btn_back)).check(matches(isDisplayed()))
         pressBack()
     }
 

@@ -1,4 +1,4 @@
-package com.ekotyoo.storyapp.ui
+package com.ekotyoo.storyapp
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

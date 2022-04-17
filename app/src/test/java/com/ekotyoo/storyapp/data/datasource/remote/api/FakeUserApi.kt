@@ -4,7 +4,7 @@ import com.ekotyoo.storyapp.data.datasource.remote.responses.LoginResponse
 import com.ekotyoo.storyapp.data.datasource.remote.responses.LoginResult
 import com.ekotyoo.storyapp.data.datasource.remote.responses.SignupResponse
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 class FakeUserApi : UserApi {
@@ -13,7 +13,7 @@ class FakeUserApi : UserApi {
 
     override suspend fun login(email: String, password: String): Response<LoginResponse> {
         return if (shouldThrowError) {
-            Response.error(401, ResponseBody.create("text/plain".toMediaType(), content = ""))
+            Response.error(401, "".toResponseBody("text/plain".toMediaType()))
         } else {
             Response.success(
                 LoginResponse(
@@ -31,7 +31,7 @@ class FakeUserApi : UserApi {
         password: String
     ): Response<SignupResponse> {
         return if (shouldThrowError) {
-            Response.error(401, ResponseBody.create("text/plain".toMediaType(), content = ""))
+            Response.error(401, "".toResponseBody("text/plain".toMediaType()))
         } else {
             Response.success(
                 SignupResponse(error = false, message = "Success")

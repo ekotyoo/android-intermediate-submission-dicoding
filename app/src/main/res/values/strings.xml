@@ -18,7 +18,6 @@
     <string name="must_not_be_empty">"Must not be empty!"</string>
     <string name="choose_image_method">"Please choose image first!"</string>
     <string name="password_less_than_6">Password must at least 6 characters!</string>
-    <string name="password_is_empty">Password enter your password first!</string>
     <string name="login_failed">"Login failed, make sure your email and password are correct!"</string>
     <string name="signup_failed">"Signup failed, try again later!"</string>
     <string name="load_stories_failed">""Failed to load data, try again later!""</string>
@@ -40,7 +39,6 @@
     <string name="no_location_selected">No location selected</string>
     <string name="location">Location</string>
     <string name="change">Change</string>
-    <string name="delete">Delete</string>
     <string name="latlon_format" translatable="false">Lat: %1$.2f Lon: %2$.2f</string>
     <string name="delete_location">Delete location</string>
 </resources>

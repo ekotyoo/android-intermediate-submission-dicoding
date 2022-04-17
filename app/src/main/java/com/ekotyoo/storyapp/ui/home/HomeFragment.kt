@@ -3,6 +3,7 @@ package com.ekotyoo.storyapp.ui.home
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,6 @@ import com.ekotyoo.storyapp.ui.maps.MapsFragment
 import com.ekotyoo.storyapp.utils.Utils
 import com.ekotyoo.storyapp.utils.ViewModelFactory
 import com.ekotyoo.storyapp.utils.wrapEspressoIdlingResource
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -79,6 +79,7 @@ class HomeFragment : Fragment() {
 
         binding.rvStory.layoutManager = layoutManager
         binding.rvStory.adapter = adapterWithLoading
+        adapter.refresh()
 
         binding.swipeLayout.setOnRefreshListener {
             adapter.refresh()
@@ -89,7 +90,7 @@ class HomeFragment : Fragment() {
             lifecycleScope.launch {
                 adapter.loadStateFlow.collect {
                     binding.loadingProgressBar.isVisible = (it.refresh is LoadState.Loading)
-                    binding.tvEmpty.isVisible = adapter.itemCount == 0
+                    binding.tvEmpty.isVisible = it.source.refresh is LoadState.NotLoading && it.append.endOfPaginationReached && adapter.itemCount < 1
                     if (it.refresh is LoadState.Error) {
                         Utils.showToast(
                             requireContext(),

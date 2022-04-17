@@ -1,6 +1,7 @@
 package com.ekotyoo.storyapp.ui.maps
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +27,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -121,6 +121,7 @@ class MapsFragment : Fragment() {
         observeViewModel()
     }
 
+    @SuppressLint("MissingPermission")
     private fun getMyLastLocation(googleMap: GoogleMap) {
         if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION) && checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)) {
             googleMap.isMyLocationEnabled = true

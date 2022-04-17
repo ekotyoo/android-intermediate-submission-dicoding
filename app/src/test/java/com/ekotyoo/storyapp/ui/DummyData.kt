@@ -1,5 +1,6 @@
 package com.ekotyoo.storyapp.ui
 
+import androidx.paging.PagingData
 import com.ekotyoo.storyapp.data.datasource.remote.responses.StoryItem
 import com.ekotyoo.storyapp.model.StoryModel
 
@@ -21,6 +22,8 @@ object DummyData {
         }
         return listItem
     }
+
+    fun generatePagingDataStoryModel(): PagingData<StoryModel> = PagingData.from(getListStoryModel())
 
     fun getListStoryModel(): List<StoryModel> {
         val stories = mutableListOf<StoryModel>()

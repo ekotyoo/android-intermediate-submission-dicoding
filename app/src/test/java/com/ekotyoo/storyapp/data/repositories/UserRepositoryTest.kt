@@ -6,7 +6,7 @@ import com.ekotyoo.storyapp.data.datasource.local.UserPreference
 import com.ekotyoo.storyapp.data.datasource.remote.UserRemoteDataSource
 import com.ekotyoo.storyapp.data.datasource.remote.api.FakeUserApi
 import com.ekotyoo.storyapp.model.UserModel
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
+import com.ekotyoo.storyapp.TestCoroutineRule
 import com.ekotyoo.storyapp.utils.AuthError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -80,7 +80,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `when signup success should throw error`() {
+    fun `when signup failed should throw error`() {
         val email = "dummy@mail.com"
         val password = "123456"
         val name = "name"

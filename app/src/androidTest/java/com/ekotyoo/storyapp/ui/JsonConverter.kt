@@ -1,4 +1,4 @@
-package com.ekotyoo.storyapp.ui.home
+package com.ekotyoo.storyapp.ui
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider

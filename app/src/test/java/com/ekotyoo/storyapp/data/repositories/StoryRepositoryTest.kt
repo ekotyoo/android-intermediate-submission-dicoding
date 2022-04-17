@@ -1,13 +1,18 @@
 package com.ekotyoo.storyapp.data.repositories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.AsyncPagingDataDiffer
+import androidx.paging.PagingData
 import com.ekotyoo.storyapp.data.datasource.local.StoryDatabase
 import com.ekotyoo.storyapp.data.datasource.remote.StoryRemoteDataSource
 import com.ekotyoo.storyapp.data.datasource.remote.api.FakeStoryApi
-import com.ekotyoo.storyapp.data.datasource.remote.api.StoryApi
+import com.ekotyoo.storyapp.model.StoryModel
 import com.ekotyoo.storyapp.ui.DummyData
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
-import com.ekotyoo.storyapp.ui.login.getOrAwaitValue
+import com.ekotyoo.storyapp.TestCoroutineRule
+import com.ekotyoo.storyapp.ui.adapters.StoryAdapter
+import com.ekotyoo.storyapp.ui.home.noopListUpdateCallback
+import com.ekotyoo.storyapp.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -17,6 +22,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -41,6 +48,35 @@ class StoryRepositoryTest {
     }
 
     @Test
+    fun `when getStories should not return empty PagingData`() = testCoroutineRule.runBlockingTest {
+        storyRepository = mock(StoryRepository::class.java)
+
+        val token = "token"
+        val expectedStories = DummyData.getListStoryModel()
+        val expectedPagingData = DummyData.generatePagingDataStoryModel()
+        val livedata = MutableLiveData<PagingData<StoryModel>>().apply {
+            value = expectedPagingData
+        }
+
+        `when`(storyRepository.getStories(token)).thenReturn(livedata)
+
+        val actualPagingData = storyRepository.getStories(token)
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = StoryAdapter.DIFF_CALLBACK,
+            updateCallback = noopListUpdateCallback,
+            mainDispatcher = testCoroutineRule.dispatcher,
+            workerDispatcher = testCoroutineRule.dispatcher
+        )
+
+        differ.submitData(actualPagingData.getOrAwaitValue())
+        advanceUntilIdle()
+
+        Assert.assertNotNull(differ.snapshot())
+        Assert.assertEquals(expectedStories.size, differ.snapshot().size)
+    }
+
+    @Test
     fun `when getStoriesWithLocation should not return empty list`() = runBlocking {
         val token = "token"
         val expectedStories = DummyData.generateStoryItem()
@@ -52,7 +88,8 @@ class StoryRepositoryTest {
 
     @Test
     fun `when getStoriesWithLocation should return empty list`() = runBlocking {
-        storyRemoteDataSource = StoryRemoteDataSource(FakeStoryApi().apply { shouldThrowError = true })
+        storyRemoteDataSource =
+            StoryRemoteDataSource(FakeStoryApi().apply { shouldThrowError = true })
         storyRepository = StoryRepository(storyRemoteDataSource, storyDatabase)
         val token = "token"
 

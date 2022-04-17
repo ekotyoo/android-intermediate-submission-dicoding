@@ -6,7 +6,7 @@ import com.ekotyoo.storyapp.ui.DummyData
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
 class FakeStoryApi : StoryApi {
@@ -20,7 +20,7 @@ class FakeStoryApi : StoryApi {
         location: Int
     ): Response<StoryResponse> {
         return if (shouldThrowError) {
-            Response.error(401, ResponseBody.create("text/plain".toMediaType(), content = ""))
+            Response.error(401, "".toResponseBody("text/plain".toMediaType()))
         } else {
             Response.success(
                 StoryResponse(
@@ -40,7 +40,7 @@ class FakeStoryApi : StoryApi {
         lon: Double?
     ): Response<StoryPostResponse> {
         return if (shouldThrowError) {
-            Response.error(401, ResponseBody.create("text/plain".toMediaType(), content = ""))
+            Response.error(401, "".toResponseBody("text/plain".toMediaType()))
         } else {
             Response.success(StoryPostResponse(error = false, message = "Success"))
         }

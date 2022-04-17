@@ -12,6 +12,7 @@ import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ekotyoo.storyapp.R
 import com.ekotyoo.storyapp.data.datasource.remote.api.ApiConfig
+import com.ekotyoo.storyapp.ui.JsonConverter
 import com.ekotyoo.storyapp.utils.EspressoIdlingResource
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -40,6 +41,20 @@ class HomeFragmentTest {
     }
 
     @Test
+    fun getStories_failed() {
+        launchFragmentInContainer<HomeFragment>(themeResId = R.style.Theme_StoryApp)
+
+        val stringBody = JsonConverter.readStringFromFile("story_error_response.json")
+        val mockResponse = MockResponse()
+            .setResponseCode(400)
+            .setBody(stringBody)
+
+        mockWebServer.enqueue(mockResponse)
+
+        onView(withId(R.id.tv_empty)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun getStories_success() {
         launchFragmentInContainer<HomeFragment>(themeResId = R.style.Theme_StoryApp)
 
@@ -53,19 +68,5 @@ class HomeFragmentTest {
         onView(withId(R.id.rv_story)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_story)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(0))
         onView(withText("zaki")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun getStories_failed() {
-        launchFragmentInContainer<HomeFragment>(themeResId = R.style.Theme_StoryApp)
-
-        val stringBody = JsonConverter.readStringFromFile("story_error_response.json")
-        val mockResponse = MockResponse()
-            .setResponseCode(400)
-            .setBody(stringBody)
-
-        mockWebServer.enqueue(mockResponse)
-
-        onView(withId(R.id.tv_empty)).check(matches(isDisplayed()))
     }
 }

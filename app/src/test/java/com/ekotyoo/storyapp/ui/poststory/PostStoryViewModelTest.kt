@@ -4,14 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ekotyoo.storyapp.data.repositories.StoryRepository
 import com.ekotyoo.storyapp.data.repositories.UserRepository
 import com.ekotyoo.storyapp.model.UserModel
-import com.ekotyoo.storyapp.ui.TestCoroutineRule
-import com.ekotyoo.storyapp.ui.login.getOrAwaitValue
-import com.ekotyoo.storyapp.utils.AuthError
+import com.ekotyoo.storyapp.TestCoroutineRule
+import com.ekotyoo.storyapp.getOrAwaitValue
 import com.ekotyoo.storyapp.utils.StoryError
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
